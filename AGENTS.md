@@ -4,7 +4,13 @@ Este proyecto sigue el enfoque **Spec-Driven Development (SDD)**.
 
 ## Stack del Proyecto
 
-*(Por definir — cuando empieces un cambio nuevo con `/sdd-new`, se detectará automáticamente)*
+| Componente | Valor |
+|------------|-------|
+| **Runtime** | Node.js + TypeScript (ESM) |
+| **CLI Framework** | Commander |
+| **Testing** | Vitest |
+| **Linter** | ESLint 9 |
+| **Formatter** | Prettier |
 
 ## Skills del Proyecto
 
@@ -20,6 +26,7 @@ Skills disponibles:
 | `prompt-engineer` | Refinamiento de prompts |
 | `go-testing` | Testing en Go (si aplica) |
 | `nodejs-backend-patterns` | Patrones Node.js backend (si aplica) |
+| `changelog-gen` | Generación de changelogs desde conventional commits |
 
 Skills SDD de sistema: `sdd-init`, `sdd-explore`, `sdd-propose`, `sdd-spec`, `sdd-design`, `sdd-tasks`, `sdd-apply`, `sdd-verify`, `sdd-archive`, `sdd-onboard`.
 

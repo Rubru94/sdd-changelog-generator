@@ -1,0 +1,29 @@
+import { describe, it, expect } from 'vitest';
+import { getLog } from '../services/git.service.js';
+
+describe('git.service', () => {
+  it('throws error for non-existent directory', () => {
+    expect(() => getLog({ repo: '/tmp/non-existent-repo-12345' })).toThrow(
+      /not a git repository/i,
+    );
+  });
+
+  it('returns commits for current repo (happy path)', () => {
+    // This test runs in the project's own git repo
+    const result = getLog({ repo: '.', from: 'HEAD~1', to: 'HEAD' });
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('includes hash and subject in raw output', () => {
+    const result = getLog({ repo: '.', from: 'HEAD~1', to: 'HEAD' });
+    expect(result.length).toBeGreaterThanOrEqual(1);
+    // Each entry should contain the delimiter
+    expect(result[0]).toContain('|---end---|');
+  });
+
+  it('accepts getLog with no options (defaults to cwd)', () => {
+    // Should not throw since we're in a git repo
+    expect(() => getLog()).not.toThrow();
+  });
+});

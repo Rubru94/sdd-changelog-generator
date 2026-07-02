@@ -1,0 +1,10 @@
+{
+  "name": "mock-git-api",
+  "version": "0.1.0",
+  "description": "Mock Git API for testing the changelog generator without a real git repository",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  }
+}

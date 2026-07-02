@@ -1,17 +1,20 @@
-# SDD Project Template
+# SDD Changelog Generator
 
-Plantilla de proyecto lista para desarrollar con **Spec-Driven Development (SDD)** y el modelo **big-pickle**.
+Generador de changelogs basado en **conventional commits**, construido con **Spec-Driven Development (SDD)** y Node.js + TypeScript.
 
-Este repositorio es un **punto de partida** — una base limpia, sin dependencias de terceros, preparada para iniciar cualquier tipo de proyecto siguiendo el flujo SDD: desde una CLI en Go hasta una API en Node.js.
+Lee el historial de Git, parsea los mensajes de commit (Conventional Commits), y genera un changelog estructurado en formato Markdown. Puede filtrar por rango de fechas, tags, o commits específicos.
 
-## Stack por defecto
+## Stack del Proyecto
 
 | Componente | Valor |
 |------------|-------|
-| **Modelo** | `opencode/big-pickle` |
-| **Orquestador** | `sdd-orchestrator` (`.opencode/agent/sdd-orchestrator.md`) |
+| **Runtime** | Node.js + TypeScript (ESM) |
+| **CLI Framework** | Commander |
+| **Testing** | Vitest |
+| **Linter** | ESLint 9 |
+| **Formatter** | Prettier |
+| **Modelo orquestador** | `opencode/big-pickle` |
 | **Persistencia** | Engram (memoria persistente entre sesiones) |
-| **Skills globales** | branch-pr, issue-creation, judgment-day, prompt-engineer, go-testing, nodejs-backend-patterns |
 | **Skills SDD** | init, explore, propose, spec, design, tasks, apply, verify, archive, onboard |
 
 ## ¿Qué es SDD?
@@ -22,47 +25,31 @@ Este repositorio es un **punto de partida** — una base limpia, sin dependencia
 /sdd-new <change>  →  proposal → specs → design → tasks → apply → verify → archive
 ```
 
-Cada fase la ejecuta un subagente especializado. El orquestador coordina, no ejecuta. Esto garantiza:
-
-- **Traza completa**: cada decisión queda documentada
-- **Aislamiento de fallos**: si una fase falla, solo se re-ejecuta esa
-- **Contexto quirúrgico**: cada subagente recibe solo lo que necesita
-- **Calidad**: especificación antes que implementación, verificación después
+Cada fase la ejecuta un subagente especializado. El orquestador coordina, no ejecuta.
 
 ## Cómo empezar
 
-### 1. Definir el stack
+### 1. Inicializar SDD
 
-Antes del primer cambio, inicializa SDD para que detecte tu stack:
-
-```
+```bash
 /sdd-init
 ```
 
-Esto escanea el proyecto, detecta el stack (lenguaje, test runner, linter) y configura la persistencia.
-
 ### 2. Crear un cambio
 
-```
+```bash
 /sdd-new mi-nuevo-feature
 ```
 
-El orquestador lanza las fases en orden. Puedes elegir entre:
-
-- **Modo automático**: todas las fases seguidas, sin pausa
-- **Modo interactivo**: después de cada fase, te muestra el resultado y pregunta si continuar
-
 ### 3. Continuar un cambio existente
 
-```
+```bash
 /sdd-continue mi-nuevo-feature
 ```
 
-Retoma el cambio desde la siguiente fase disponible.
-
 ### 4. Verificar e implementar
 
-```
+```bash
 /sdd-apply mi-cambio      # Implementa las tareas
 /sdd-verify mi-cambio     # Valida contra las especificaciones
 /sdd-archive mi-cambio    # Archiva el cambio completado
@@ -73,59 +60,70 @@ Retoma el cambio desde la siguiente fase disponible.
 | Comando | Qué hace |
 |---------|----------|
 | `/sdd-init` | Inicializa SDD en el proyecto |
-| `/sdd-new <nombre>` | Nuevo cambio: propuesta → specs → diseño → tareas → aplicar → verificar → archivar |
+| `/sdd-new <nombre>` | Nuevo cambio completo |
 | `/sdd-continue <nombre>` | Continúa el cambio desde donde se quedó |
-| `/sdd-ff <nombre>` | Fast-forward: planea todo de golpe (propuesta + specs + diseño + tareas) |
-| `/sdd-explore <tema>` | Investiga una idea sin comprometerse a un cambio |
-| `/sdd-apply <nombre>` | Implementa las tareas de un cambio |
-| `/sdd-verify <nombre>` | Valida la implementación contra las specs |
+| `/sdd-ff <nombre>` | Fast-forward planning |
+| `/sdd-explore <tema>` | Investiga una idea |
+| `/sdd-apply <nombre>` | Implementa las tareas |
+| `/sdd-verify <nombre>` | Valida contra las specs |
 | `/sdd-archive <nombre>` | Archiva un cambio completado |
 
 ## Estructura del proyecto
 
 ```
-sdd-project-template/
+changelog-generator/
 ├── AGENTS.md                        ← Instrucciones del proyecto para el agente
-├── opencode.json                    ← Configuración del proyecto (modelo, agente, instrucciones)
-├── README.md                        ← Esta plantilla
+├── SPEC.md                          ← Especificación funcional del producto
+├── ARCHITECTURE.md                  ← Documento de arquitectura
+├── opencode.json                    ← Configuración del proyecto
+├── README.md                        ← Este documento
+├── package.json                     ← Node.js + TypeScript + Commander
+├── tsconfig.json                    ← TypeScript config
+├── vitest.config.ts                 ← Vitest test runner
+├── eslint.config.js                 ← ESLint flat config
+├── .prettierrc                      ← Prettier formatter
+├── .gitignore                       ← Ignora node_modules, dist, .env
+│
+├── src/
+│   ├── index.ts                     ← Entry point CLI
+│   └── __tests__/                   ← Tests Vitest
 │
 ├── .opencode/
 │   ├── agent/
-│   │   └── sdd-orchestrator.md      ← Orquestador SDD (agente principal)
-│   └── skills/                      ← Skills propias del proyecto (vacío, para añadir)
+│   │   └── sdd-orchestrator.md      ← Orquestador SDD
+│   └── skills/                      ← Skills del proyecto
 │
-└── ...                              ← Tu código fuente aquí
+├── agents/                          ← Definiciones de agentes
+│   ├── orchestrator.md
+│   └── reviewer.md
+│
+├── skills/                          ← Skills reutilizables
+│
+├── tools/                           ← MCP o Mock API
+│
+├── tests/                           ← Golden tests
+│   └── golden.jsonl
+│
+├── rules.md                         ← Reglas del auditor
+├── EFFICIENCY.md                    ← Métricas de eficiencia
+└── Practica_Individual_2Semanas.md  ← Enunciado de la práctica
 ```
-
-## Skills incorporadas
-
-### SDD (sistema)
-- `sdd-init` — Bootstrap del contexto SDD
-- `sdd-explore` — Investigación exploratoria del código
-- `sdd-propose` — Creación de propuestas de cambio
-- `sdd-spec` — Redacción de especificaciones
-- `sdd-design` — Diseño técnico detallado
-- `sdd-tasks` — Desglose en tareas implementables
-- `sdd-apply` — Implementación de código
-- `sdd-verify` — Validación contra especificaciones
-- `sdd-archive` — Cierre y archivado de cambios
-
-### Globales (genéricas)
-- `branch-pr` — Creación de PRs con issue-first
-- `issue-creation` — Creación de issues en GitHub
-- `judgment-day` — Revisión adversarial paralela
-- `prompt-engineer` — Refinamiento de prompts
-- `go-testing` — Testing en Go (cuando aplique)
-- `nodejs-backend-patterns` — Patrones Node.js (cuando aplique)
 
 ## Convenciones del proyecto
 
 - **Idioma**: español para comunicación, inglés para código y documentación técnica
 - **Commits**: conventional commits en inglés (`feat:`, `fix:`, `chore:`, etc.)
-- **Testing**: según detecte `sdd-init` (TDD si hay test runner disponible)
+- **Testing**: Vitest con TDD
 - **Persistencia**: Engram (predeterminado)
 
-## Notas
+## Scripts disponibles
 
-- El directorio `.opencode/skills/` está vacío para que añadas las skills específicas de tu proyecto.
-- El skill registry vive en Engram (no en disco) para mantener el proyecto limpio.
+```bash
+npm run dev          # Desarrollo con hot-reload (tsx watch)
+npm run build        # Compilar TypeScript
+npm run start        # Ejecutar versión compilada
+npm run test         # Ejecutar tests (Vitest)
+npm run test:watch   # Tests en modo watch
+npm run lint         # ESLint
+npm run typecheck    # tsc --noEmit
+```
