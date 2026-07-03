@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import type { GenerateCliOptions } from './commands/generate.js';
+import { handleGenerate } from './commands/generate.js';
 
 const program = new Command();
 
@@ -26,7 +27,6 @@ program
   );
 
 program.action(async (options: GenerateCliOptions) => {
-  const { handleGenerate } = await import('./commands/generate.js');
   await handleGenerate(options);
 });
 

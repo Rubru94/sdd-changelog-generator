@@ -82,25 +82,30 @@ changelog-generator/
 ├── vitest.config.ts                 ← Vitest test runner
 ├── eslint.config.js                 ← ESLint flat config
 ├── .prettierrc                      ← Prettier formatter
-├── .gitignore                       ← Ignora node_modules, dist, .env
+├── .gitignore                       ← Ignora node_modules, dist, pkg, .env
 │
 ├── src/
 │   ├── index.ts                     ← Entry point CLI
 │   └── __tests__/                   ← Tests Vitest
 │
 ├── .opencode/
-│   ├── agent/
-│   │   └── sdd-orchestrator.md      ← Orquestador SDD
-│   └── skills/                      ← Skills del proyecto
+│   ├── .gitignore                   ← Ignora node_modules en .opencode/
+│   ├── agents/
+│   │   ├── sdd-orchestrator.md      ← Orquestador SDD (principal)
+│   │   └── reviewer.md              ← Revisor de calidad
+│   └── skills/
+│       └── changelog-generation/    ← Skill de generación de changelogs
+│           └── SKILL.md
 │
-├── agents/                          ← Definiciones de agentes
-│   ├── orchestrator.md
-│   └── reviewer.md
-│
-├── skills/                          ← Skills reutilizables
+├── changes/                         ← Artefactos SDD (histórico)
+│   └── changelog-core/
+│       ├── proposal.md
+│       ├── specs.md
+│       ├── design.md
+│       ├── tasks.md
+│       └── verify-report.md
 │
 ├── tools/                           ← MCP o Mock API
-│
 ├── tests/                           ← Golden tests
 │   └── golden.jsonl
 │
@@ -120,10 +125,49 @@ changelog-generator/
 
 ```bash
 npm run dev          # Desarrollo con hot-reload (tsx watch)
-npm run build        # Compilar TypeScript
-npm run start        # Ejecutar versión compilada
+npm run build        # Compilar TypeScript → dist/
+npm run start        # Ejecutar versión compilada (node dist/index.js)
 npm run test         # Ejecutar tests (Vitest)
 npm run test:watch   # Tests en modo watch
 npm run lint         # ESLint
 npm run typecheck    # tsc --noEmit
+npm run package      # Compilar + generar binarios standalone → pkg/
 ```
+
+## Binarios portables
+
+El proyecto puede empaquetarse como binario standalone para **Linux, macOS y Windows** sin necesidad de Node.js ni npm.
+
+### Generar los binarios
+
+```bash
+npm run package
+```
+
+Esto compila TypeScript y empaqueta todo (incluyendo Commander) en un solo ejecutable:
+
+```
+pkg/
+├── changelog-generator-linux        (49 MB)
+├── changelog-generator-macos        (54 MB)
+└── changelog-generator-win.exe      (41 MB)
+```
+
+### Usar en cualquier repo
+
+Copia el binario a cualquier repositorio con git y ejecútalo directamente:
+
+```bash
+# En Linux/macOS:
+./changelog-generator-macos --from HEAD~5 --to HEAD
+
+# En Windows:
+changelog-generator-win.exe --from HEAD~5 --to HEAD
+
+# Ejemplos:
+./changelog-generator-macos --from v1.0.0 --to v2.0.0 --output CHANGELOG.md
+./changelog-generator-macos --format json --from HEAD~10
+./changelog-generator-macos --type feat,fix --group
+```
+
+Sin Node.js, sin npm install, sin dependencias. Binario autocontenido.
