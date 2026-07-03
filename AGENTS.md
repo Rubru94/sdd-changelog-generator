@@ -14,9 +14,15 @@ Este proyecto sigue el enfoque **Spec-Driven Development (SDD)**.
 
 ## Skills del Proyecto
 
-Las skills específicas del proyecto viven en `.opencode/skills/`.
+Las skills específicas del proyecto viven en `.opencode/skills/<skill>/SKILL.md`.
 
-Skills disponibles:
+### Skills de proyecto (`.opencode/skills/`)
+
+| Skill | Propósito |
+|-------|-----------|
+| `changelog-generation` | Generación de changelogs desde conventional commits |
+
+### Skills de sistema (globales)
 
 | Skill | Propósito |
 |-------|-----------|
@@ -26,7 +32,6 @@ Skills disponibles:
 | `prompt-engineer` | Refinamiento de prompts |
 | `go-testing` | Testing en Go (si aplica) |
 | `nodejs-backend-patterns` | Patrones Node.js backend (si aplica) |
-| `changelog-gen` | Generación de changelogs desde conventional commits |
 
 Skills SDD de sistema: `sdd-init`, `sdd-explore`, `sdd-propose`, `sdd-spec`, `sdd-design`, `sdd-tasks`, `sdd-apply`, `sdd-verify`, `sdd-archive`, `sdd-onboard`.
 

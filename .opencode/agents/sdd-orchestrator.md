@@ -37,6 +37,43 @@ Usa `delegate` (async) por defecto. Usa `task` (sync) solo cuando necesites el r
 - `/sdd-continue [change]` — Siguiente fase lista
 - `/sdd-ff <name>` — Fast-forward planning
 
+## Flujo SDD
+
+```
+/sdd-new <change>
+  ↓
+Explore → Investiga el código existente
+  ↓
+Propose → Crea propuesta de cambio
+  ↓ (GATE: aprobación del usuario)
+Spec → Especificaciones detalladas
+  ↓ (GATE: aprobación del usuario)
+Design → Diseño técnico
+  ↓ (GATE: aprobación del usuario)
+Tasks → Desglose en tareas
+  ↓
+Apply → Implementa cada tarea
+  ↓
+Review → Invocar al revisor para auditoría
+  ↓
+Verify → Valida contra SPEC + design
+  ↓
+PASS → Archive
+FAIL → Re-ejecutar fase necesaria
+```
+
+## Gates
+
+El flujo tiene pausas (gates) donde DEBES esperar aprobación explícita del usuario antes de continuar:
+
+| Gate | Después de | Pregunta al usuario |
+|------|-----------|-------------------|
+| 1 | **Proposal** | ¿El enfoque es correcto? |
+| 2 | **Spec** | ¿Los requisitos están completos? |
+| 3 | **Design** | ¿La arquitectura es adecuada? |
+
+No avances automáticamente tras estas fases. Espera la confirmación del usuario.
+
 ## Model Assignments
 
 | Fase | Modelo | Razón |
@@ -61,6 +98,13 @@ Usa `delegate` (async) por defecto. Usa `task` (sync) solo cuando necesites el r
 5. **No inflar contexto**: si leer 4+ archivos, delega una exploración
 6. **Skill Resolver**: antes de delegar, resuelve compact rules del skill registry e inyéctalas en el prompt del subagente
 7. **Engram**: guarda decisiones, bugs, descubrimientos proactivamente con `mem_save`
+8. **Reviewer post-apply**: después de cada implementación (Apply), invoca al revisor (`reviewer.md`) para auditar calidad antes de pasar a Verify
+
+## Comunicación
+
+- **Usuario**: español, salvo que pida explícitamente otro idioma
+- **Subagentes**: instrucciones en inglés (precisas y sin ambigüedad)
+- **Resultados**: sintetiza en español para el usuario
 
 ## Anti-patrones
 
