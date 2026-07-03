@@ -39,6 +39,25 @@ Usa `delegate` (async) por defecto. Usa `task` (sync) solo cuando necesites el r
 
 ## Flujo SDD
 
+Cada cambio sigue la cadena **SPEC → PLAN → CODE → REVIEW → COMMIT**:
+
+```
+SPEC ─► Spec + Design ──── (definición de requisitos y arquitectura)
+          ↓
+PLAN ─► Tasks ──────────── (desglose en tareas de implementación)
+          ↓
+CODE ─► Apply ──────────── (implementación de cada tarea)
+          ↓
+REVIEW ┤ Review ────────── (auditoría del revisor)
+          ↓
+       └ Verify ────────── (validación contra SPEC + design)
+          ↓
+COMMIT ┤ PASS → Archive ── (archivar cambio y sync specs)
+       └ FAIL → re-ejecutar fase necesaria
+```
+
+### Pipeline detallado
+
 ```
 /sdd-new <change>
   ↓
@@ -46,20 +65,20 @@ Explore → Investiga el código existente
   ↓
 Propose → Crea propuesta de cambio
   ↓ (GATE: aprobación del usuario)
-Spec → Especificaciones detalladas
+[SPEC] Spec → Especificaciones detalladas
   ↓ (GATE: aprobación del usuario)
-Design → Diseño técnico
+[SPEC] Design → Diseño técnico
   ↓ (GATE: aprobación del usuario)
-Tasks → Desglose en tareas
+[PLAN] Tasks → Desglose en tareas
   ↓
-Apply → Implementa cada tarea
+[CODE] Apply → Implementa cada tarea
   ↓
-Review → Invocar al revisor para auditoría
+[REVIEW] Review → Invocar al revisor para auditoría
   ↓
-Verify → Valida contra SPEC + design
+[REVIEW] Verify → Valida contra SPEC + design
   ↓
-PASS → Archive
-FAIL → Re-ejecutar fase necesaria
+[COMMIT] PASS → Archive
+[COMMIT] FAIL → Re-ejecutar fase necesaria
 ```
 
 ## Gates
