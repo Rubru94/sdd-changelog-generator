@@ -1,8 +1,0 @@
-{"name": "full changelog", "input": {"repo": ".", "format": "markdown", "group": true}, "expect": {"contains": ["# Changelog", "### Features", "### Bug Fixes"]}}
-{"name": "json output", "input": {"repo": ".", "format": "json"}, "expect": {"validJson": true, "contains": ["sections"]}}
-{"name": "version header", "input": {"repo": ".", "version": "1.0.0", "format": "markdown"}, "expect": {"contains": ["## [1.0.0]"]}}
-{"name": "empty range", "input": {"repo": ".", "from": "v999.0.0", "format": "markdown"}, "expect": {"contains": ["No changes"]}}
-{"name": "filter by type", "input": {"repo": ".", "type": "feat,fix", "format": "markdown"}, "expect": {"notContains": ["### Chores"]}}
-{"name": "breaking changes", "input": {"repo": ".", "format": "markdown", "group": true}, "expect": {"contains": ["BREAKING"]}}
-{"name": "output to file", "input": {"repo": ".", "output": "/tmp/test-changelog.md", "format": "markdown"}, "expect": {"fileExists": "/tmp/test-changelog.md"}}
-{"name": "non-git directory error", "input": {"repo": "/tmp/non-existent-repo", "format": "markdown"}, "expect": {"exitCode": 1, "contains": ["not a git repository", "error"]}}

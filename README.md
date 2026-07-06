@@ -98,8 +98,6 @@ changelog-generator/
 │
 ├── .opencode/                       ← Bootstrap de opencode (package.json, node_modules)
 ├── tools/                           ← MCP o Mock API
-├── tests/                           ← Golden tests
-│   └── golden.jsonl
 │
 ├── rules.md                         ← Reglas del evaluador
 ├── EFFICIENCY.md                    ← Métricas de eficiencia
