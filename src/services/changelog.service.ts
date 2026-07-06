@@ -39,6 +39,13 @@ export function generate(options: ChangelogOptions): string {
     );
   }
 
+  // Sort commits by date descending (newest first)
+  filteredCommits.sort((a, b) => {
+    const timeA = a.date ? Date.parse(a.date) : 0;
+    const timeB = b.date ? Date.parse(b.date) : 0;
+    return (isFinite(timeB) ? timeB : 0) - (isFinite(timeA) ? timeA : 0);
+  });
+
   // Step 4: Format output
   if (options.format === 'json') {
     return formatJson(filteredCommits, options);

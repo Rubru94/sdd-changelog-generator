@@ -17,6 +17,7 @@ export interface Commit {
   scope?: string;
   description: string;
   body?: string;
+  date?: string;
   breaking: boolean;
   footers: Record<string, string>;
 }

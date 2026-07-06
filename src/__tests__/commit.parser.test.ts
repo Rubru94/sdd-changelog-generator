@@ -37,7 +37,7 @@ describe('commit.parser', () => {
   });
 
   it('detects breaking change from body', () => {
-    const raw = `abc127|---end---|feat: add new API|---end---|BREAKING CHANGE: removes old endpoints`;
+    const raw = `abc127|---end---|feat: add new API|---end---||---end---|BREAKING CHANGE: removes old endpoints`;
     const result = parseCommit(raw);
     expect(result.type).toBe('feat');
     expect(result.breaking).toBe(true);
@@ -60,7 +60,7 @@ describe('commit.parser', () => {
   });
 
   it('parses body content', () => {
-    const raw = `abc130|---end---|feat: implement feature|---end---|Detailed body here\n\nReviewed-by: User`;
+    const raw = `abc130|---end---|feat: implement feature|---end---||---end---|Detailed body here\n\nReviewed-by: User`;
     const result = parseCommit(raw);
     expect(result.body).toContain('Detailed body here');
     expect(result.footers).toHaveProperty('Reviewed-by');
@@ -99,5 +99,11 @@ describe('commit.parser', () => {
     const result = parseCommit(raw);
     expect(result.type).toBeUndefined();
     expect(result.description).toBe('something');
+  });
+
+  it('parses date from raw git log with %cI format', () => {
+    const raw = `abc131|---end---|feat(auth): add login|---end---|2026-07-06T12:00:00Z|---end---|`;
+    const result = parseCommit(raw);
+    expect(result.date).toBe('2026-07-06T12:00:00Z');
   });
 });

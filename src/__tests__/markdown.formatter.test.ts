@@ -9,6 +9,7 @@ function makeCommit(overrides: Partial<Commit> = {}): Commit {
     scope: undefined,
     description: 'test commit',
     body: undefined,
+    date: undefined,
     breaking: false,
     footers: {},
     ...overrides,
@@ -99,5 +100,31 @@ describe('markdown.formatter', () => {
     expect(result).toContain('## [2.0.0]');
     expect(result).toContain('### Features');
     expect(result).toContain('### Bug Fixes');
+  });
+
+  it('shows date in YYYY-MM-DD format in parentheses when present', () => {
+    const commits: Commit[] = [
+      makeCommit({ date: '2026-07-03T12:00:00Z', description: 'dated commit' }),
+    ];
+    const result = formatMarkdown(commits, { format: 'markdown', group: true });
+    expect(result).toContain('(2026-07-03)');
+  });
+
+  it('skips date parentheses when date is empty', () => {
+    const commits: Commit[] = [
+      makeCommit({ date: '', description: 'no date commit' }),
+    ];
+    const result = formatMarkdown(commits, { format: 'markdown', group: true });
+    expect(result).toContain('- no date commit');
+    expect(result).not.toContain('()');
+  });
+
+  it('skips date parentheses when date is undefined', () => {
+    const commits: Commit[] = [
+      makeCommit({ description: 'another no date commit' }),
+    ];
+    const result = formatMarkdown(commits, { format: 'markdown', group: true });
+    expect(result).toContain('- another no date commit');
+    expect(result).not.toContain('()');
   });
 });

@@ -13,6 +13,7 @@ const DELIMITER = '|---end---|';
 export interface RawCommit {
   hash: string;
   subject: string;
+  date: string;
   body: string;
 }
 
@@ -27,9 +28,10 @@ export function parseRawCommit(raw: string): RawCommit | null {
 
   const hash = parts[0]?.trim() ?? '';
   const subject = parts[1]?.trim() ?? '';
-  const body = parts.slice(2).join(DELIMITER).trim();
+  const date = parts[2]?.trim() ?? '';
+  const body = parts[3]?.trim() ?? '';
 
-  return { hash, subject, body };
+  return { hash, subject, date, body };
 }
 
 /**
@@ -49,7 +51,7 @@ export function parseCommit(
     };
   }
 
-  const { hash, subject, body } = rawCommit;
+  const { hash, subject, body, date } = rawCommit;
   const match = subject.match(CONVENTIONAL_COMMIT_RE);
 
   if (!match?.groups) {
@@ -57,6 +59,7 @@ export function parseCommit(
       hash,
       description: subject,
       body,
+      date,
       breaking: checkBreakingInBody(body),
       footers: parseFooters(body),
     };
@@ -76,6 +79,7 @@ export function parseCommit(
     scope,
     description,
     body,
+    date,
     breaking: breakingSubject || breakingBody,
     footers,
   };

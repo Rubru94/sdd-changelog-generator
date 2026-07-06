@@ -25,7 +25,7 @@ export function getLog(options: GetLogOptions = {}): string[] {
   }
 
   // Build git command using args array to avoid shell interpretation
-  const format = `--format=%H${DELIMITER}%s${DELIMITER}%b${DELIMITER}`;
+  const format = `--format=%H${DELIMITER}%s${DELIMITER}%cI${DELIMITER}%b${DELIMITER}`;
   const range = buildRange(options.from, options.to);
   const args = ['-C', repoPath, 'log', format, range];
 

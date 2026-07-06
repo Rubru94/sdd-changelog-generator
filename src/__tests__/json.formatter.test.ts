@@ -9,6 +9,7 @@ function makeCommit(overrides: Partial<Commit> = {}): Commit {
     scope: undefined,
     description: 'test commit',
     body: undefined,
+    date: undefined,
     breaking: false,
     footers: {},
     ...overrides,
@@ -84,5 +85,27 @@ describe('json.formatter', () => {
 
     expect(result.sections).toHaveLength(1);
     expect(result.sections[0].type).toBe('_other');
+  });
+
+  it('includes date field in commit when present', () => {
+    const commits: Commit[] = [
+      makeCommit({ date: '2026-07-03T12:00:00Z', description: 'dated commit' }),
+    ];
+    const result = JSON.parse(
+      formatJson(commits, { format: 'json', group: true }),
+    );
+
+    expect(result.sections[0].commits[0].date).toBe('2026-07-03T12:00:00Z');
+  });
+
+  it('omits date field when not set', () => {
+    const commits: Commit[] = [
+      makeCommit({ description: 'no date commit' }),
+    ];
+    const result = JSON.parse(
+      formatJson(commits, { format: 'json', group: true }),
+    );
+
+    expect(result.sections[0].commits[0].date).toBeUndefined();
   });
 });

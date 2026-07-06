@@ -54,7 +54,8 @@ export function formatMarkdown(
 
     for (const commit of typeCommits) {
       const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      lines.push(`- ${scope}${commit.description}`);
+      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      lines.push(`- ${scope}${commit.description}${date}`);
 
       if (commit.breaking) {
         breakingCommits.push(commit);
@@ -73,7 +74,8 @@ export function formatMarkdown(
 
     for (const commit of typeCommits) {
       const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      lines.push(`- ${scope}${commit.description}`);
+      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      lines.push(`- ${scope}${commit.description}${date}`);
     }
   }
 
@@ -82,7 +84,8 @@ export function formatMarkdown(
     lines.push('');
     lines.push('### Changes');
     for (const commit of grouped._other) {
-      lines.push(`- ${commit.description}`);
+      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      lines.push(`- ${commit.description}${date}`);
     }
   }
 
@@ -92,7 +95,8 @@ export function formatMarkdown(
     lines.push('### BREAKING CHANGES');
     for (const commit of breakingCommits) {
       const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      lines.push(`- ${scope}${commit.description}`);
+      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      lines.push(`- ${scope}${commit.description}${date}`);
       if (commit.body) {
         const breakingBody = extractBreakingBody(commit.body);
         if (breakingBody) {

@@ -26,4 +26,16 @@ describe('git.service', () => {
     // Should not throw since we're in a git repo
     expect(() => getLog()).not.toThrow();
   });
+
+  it('includes ISO date in raw output (from %cI format)', () => {
+    const result = getLog({ repo: '.', from: 'HEAD~1', to: 'HEAD' });
+    expect(result.length).toBeGreaterThanOrEqual(1);
+    // The output should contain an ISO date string between two delimiters
+    expect(result[0]).toMatch(/\|---end---\|.*\|---end---\|/);
+    // %cI produces ISO 8601 format, so the date field should match YYYY-MM-DD
+    const parts = result[0].split('|---end---|');
+    expect(parts.length).toBeGreaterThanOrEqual(3);
+    // parts[2] should be the date field from %cI
+    expect(parts[2]).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
 });
