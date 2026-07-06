@@ -1,3 +1,5 @@
+export type DateFormatMode = 'date-only' | 'date-time' | 'iso';
+
 export type CommitType =
   | 'feat'
   | 'fix'
@@ -17,7 +19,7 @@ export interface Commit {
   scope?: string;
   description: string;
   body?: string;
-  date?: string;
+  date: string;
   breaking: boolean;
   footers: Record<string, string>;
 }
@@ -36,6 +38,7 @@ export interface ChangelogOptions {
   version?: string;
   all?: boolean;
   type?: CommitType[];
+  dateFormat?: DateFormatMode;
 }
 
 export const COMMIT_TYPE_HEADINGS: Record<string, string> = {

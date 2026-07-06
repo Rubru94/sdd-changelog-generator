@@ -9,7 +9,7 @@ function makeCommit(overrides: Partial<Commit> = {}): Commit {
     scope: undefined,
     description: 'test commit',
     body: undefined,
-    date: undefined,
+    date: '',
     breaking: false,
     footers: {},
     ...overrides,
@@ -98,14 +98,12 @@ describe('json.formatter', () => {
     expect(result.sections[0].commits[0].date).toBe('2026-07-03T12:00:00Z');
   });
 
-  it('omits date field when not set', () => {
-    const commits: Commit[] = [
-      makeCommit({ description: 'no date commit' }),
-    ];
+  it('includes empty date field when not set', () => {
+    const commits: Commit[] = [makeCommit({ description: 'no date commit' })];
     const result = JSON.parse(
       formatJson(commits, { format: 'json', group: true }),
     );
 
-    expect(result.sections[0].commits[0].date).toBeUndefined();
+    expect(result.sections[0].commits[0].date).toBe('');
   });
 });
