@@ -48,7 +48,7 @@ Reglas para el agente revisor. Define los criterios para PASS, WARN y FAIL.
 
 | Rule | Description | PASS | WARN | FAIL |
 |------|-------------|------|------|------|
-| R-016 | Cambio documentado en .opencode/changes/ | Todos los archivos presentes | Faltan 1 archivo | Faltan 2+ archivos |
+| R-016 | Cambio documentado (Engram + git commit) | Artefactos SDD persisten en Engram + commit | 1 artefacto faltante | 2+ artefactos faltantes |
 | R-017 | Sin código sin especificación | Todo código tiene req asociado | 1 funcionalidad no especificada | 2+ sin especificar |
 
 ## PASS / WARN / FAIL Policy

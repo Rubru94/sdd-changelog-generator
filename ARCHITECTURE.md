@@ -36,8 +36,9 @@ src/
     ├── commit.parser.test.ts   # Unit tests for parser
     ├── markdown.formatter.test.ts  # Unit tests for markdown formatter
     ├── json.formatter.test.ts      # Unit tests for JSON formatter
-    ├── git.service.test.ts     # Unit tests for git service
-    └── cli.integration.test.ts # Integration tests (VITEST_INTEGRATION)
+    ├── changelog.service.test.ts   # Unit tests for changelog orchestration
+    ├── git.service.test.ts         # Unit tests for git service
+    └── cli.integration.test.ts     # Integration tests (VITEST_INTEGRATION)
 ```
 
 ## Component Responsibilities
@@ -80,7 +81,7 @@ interface GitService {
 - Handles errors: invalid repo, invalid ref, git not installed
 - Returns raw commit lines as string[] (one commit per entry with all metadata)
 
-**Key design**: `--format` uses `%H%n%s%n%b%n---end-of-commit---` delimiter to parse multi-line commits.
+**Key design**: `--format` uses `%H|---end---|%s|---end---|%cI|---end---|%b|---end---|` delimiter to parse multi-line commits. The `%cI` field provides the committer date in ISO 8601 format, extracted as `parts[2]` after split.
 
 #### changelog.service.ts
 **Purpose**: Orchestrate the full changelog generation pipeline.
@@ -96,8 +97,9 @@ Pipeline:
 2. Parse each raw commit with `commitParser.parse(line)` → `Commit[]`
 3. Apply filters (type filter, exclude non-conventional unless --all)
 4. Group commits by type
-5. Call appropriate formatter (markdown or json)
-6. Return formatted string
+5. Sort commits by date descending (newest first, stable sort with `isFinite` NaN guard)
+6. Call appropriate formatter (markdown or json)
+7. Return formatted string
 
 ### 3. Parser Layer (`src/parsers/commit.parser.ts`)
 
@@ -170,10 +172,11 @@ type CommitType = 'feat' | 'fix' | 'chore' | 'refactor' | 'docs' | 'style'
 
 interface Commit {
   hash: string;
-  type: CommitType;
+  type?: CommitType;
   scope?: string;
   description: string;
   body?: string;
+  date?: string;           // ISO 8601 committer date from %cI
   breaking: boolean;
   footers: Record<string, string>;
 }
@@ -227,6 +230,8 @@ changelog.service.generate(options)
     ├─► Filter commits (type filter, conventional check)
     │
     ├─► Group commits by type (if --group)
+    │
+    ├─► Sort commits by date descending (newest first, `isFinite` NaN guard)
     │
     ├─► formatter.format(groupedCommits, options)
     │       │

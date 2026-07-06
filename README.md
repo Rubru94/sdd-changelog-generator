@@ -84,32 +84,24 @@ changelog-generator/
 ├── .prettierrc                      ← Prettier formatter
 ├── .gitignore                       ← Ignora node_modules, dist, pkg, .env
 │
+├── agents/                          ← Agentes del sistema (orquestador + revisor)
+│   ├── orchestrator.md              ← Orquestador SDD (principal)
+│   └── reviewer.md                  ← Revisor de calidad
+│
+├── skills/                          ← Skills del proyecto
+│   └── changelog-generation/        ← Skill de generación de changelogs
+│       └── SKILL.md
+│
 ├── src/
 │   ├── index.ts                     ← Entry point CLI
 │   └── __tests__/                   ← Tests Vitest
 │
-├── .opencode/
-│   ├── .gitignore                   ← Ignora node_modules en .opencode/
-│   ├── agents/
-│   │   ├── sdd-orchestrator.md      ← Orquestador SDD (principal)
-│   │   └── reviewer.md              ← Revisor de calidad
-│   └── skills/
-│       └── changelog-generation/    ← Skill de generación de changelogs
-│           └── SKILL.md
-│
-├── changes/                         ← Artefactos SDD (histórico)
-│   └── changelog-core/
-│       ├── proposal.md
-│       ├── specs.md
-│       ├── design.md
-│       ├── tasks.md
-│       └── verify-report.md
-│
+├── .opencode/                       ← Bootstrap de opencode (package.json, node_modules)
 ├── tools/                           ← MCP o Mock API
 ├── tests/                           ← Golden tests
 │   └── golden.jsonl
 │
-├── rules.md                         ← Reglas del auditor
+├── rules.md                         ← Reglas del evaluador
 ├── EFFICIENCY.md                    ← Métricas de eficiencia
 └── Practica_Individual_2Semanas.md  ← Enunciado de la práctica
 ```
