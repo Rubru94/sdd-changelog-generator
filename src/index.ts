@@ -24,6 +24,10 @@ program
   .option(
     '--type <types>',
     'Filter by commit types (comma-separated, e.g. feat,fix)',
+  )
+  .option(
+    '--date-format <mode>',
+    'Date format for commit dates: date-only (default), date-time, or iso',
   );
 
 program.action(async (options: GenerateCliOptions) => {

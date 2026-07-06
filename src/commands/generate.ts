@@ -1,5 +1,9 @@
 import { writeFileSync } from 'node:fs';
-import type { ChangelogOptions, CommitType } from '../types/commit.types.js';
+import type {
+  ChangelogOptions,
+  CommitType,
+  DateFormatMode,
+} from '../types/commit.types.js';
 import { generate } from '../services/changelog.service.js';
 
 export interface GenerateCliOptions {
@@ -12,6 +16,7 @@ export interface GenerateCliOptions {
   group?: boolean;
   all?: boolean;
   type?: string;
+  dateFormat?: string;
 }
 
 /**
@@ -73,6 +78,17 @@ function buildChangelogOptions(cli: GenerateCliOptions): ChangelogOptions {
       .split(',')
       .map((t) => t.trim().toLowerCase()) as CommitType[];
     options.type = types;
+  }
+
+  const validDateFormats: DateFormatMode[] = ['date-only', 'date-time', 'iso'];
+  if (cli.dateFormat) {
+    if (!validDateFormats.includes(cli.dateFormat as DateFormatMode)) {
+      console.error(
+        `Error: Invalid date format "${cli.dateFormat}". Use "date-only", "date-time", or "iso".`,
+      );
+      process.exit(1);
+    }
+    options.dateFormat = cli.dateFormat as DateFormatMode;
   }
 
   return options;

@@ -46,6 +46,7 @@ export function parseCommit(
     return {
       hash: '',
       description: raw?.trim() ?? '',
+      date: '',
       breaking: false,
       footers: {},
     };

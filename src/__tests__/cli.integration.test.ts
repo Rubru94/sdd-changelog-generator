@@ -30,6 +30,7 @@ describe('CLI integration', () => {
     expect(result.stdout).toContain('--to');
     expect(result.stdout).toContain('--format');
     expect(result.stdout).toContain('--output');
+    expect(result.stdout).toContain('--date-format');
   });
 
   it('shows version with -V flag', () => {
@@ -61,5 +62,29 @@ describe('CLI integration', () => {
     const repoPath = process.cwd();
     const result = runCli(`--repo "${repoPath}"`);
     expect(result.exitCode).toBe(0);
+  });
+
+  it('passes --date-format date-time through', () => {
+    const result = runCli('--date-format date-time');
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('# Changelog');
+  });
+
+  it('accepts --date-format date-only (explicit default)', () => {
+    const result = runCli('--date-format date-only');
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('# Changelog');
+  });
+
+  it('rejects invalid --date-format value', () => {
+    const result = runCli('--date-format invalidvalue');
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain('Invalid date format');
+  });
+
+  it('defaults to date-only when --date-format is omitted', () => {
+    const result = runCli('');
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('# Changelog');
   });
 });

@@ -71,6 +71,7 @@ describe('commit.parser', () => {
     const result = parseCommit('');
     expect(result.hash).toBe('');
     expect(result.description).toBe('');
+    expect(result.date).toBe('');
   });
 
   it('parses all commit types', () => {
