@@ -12,7 +12,9 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "lint": "eslint src/",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:patch": "npm version patch --no-git-tag-version"
   },
   "bin": {
     "changelog-generator": "./dist/index.js"
