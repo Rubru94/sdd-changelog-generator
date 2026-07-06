@@ -14,9 +14,9 @@ Este proyecto sigue el enfoque **Spec-Driven Development (SDD)**.
 
 ## Skills del Proyecto
 
-Las skills específicas del proyecto viven en `.opencode/skills/<skill>/SKILL.md`.
+Las skills específicas del proyecto viven en `skills/<skill>/SKILL.md`.
 
-### Skills de proyecto (`.opencode/skills/`)
+### Skills de proyecto (`skills/`)
 
 | Skill | Propósito |
 |-------|-----------|
