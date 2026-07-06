@@ -42,6 +42,22 @@ Skills SDD de sistema: `sdd-init`, `sdd-explore`, `sdd-propose`, `sdd-spec`, `sd
 - **Testing**: según detecte `sdd-init` (TDD si hay test runner disponible)
 - **Persistencia**: Engram (predeterminado) o el que se configure al empezar un cambio
 
+## Workflow de ramas
+
+Cada cambio nuevo (`/sdd-new`) crea una rama separada desde `main`:
+
+```
+/sdd-new <change>
+  → git checkout -b <type>/<change> main
+  → [SDD flow: spec → design → tasks → apply → verify → archive]
+  → cada tarea implementada → commit convencional
+  → opcional: gh pr create
+```
+
+- **Naming**: `<type>/<change-name>` — `feat/show-commit-date`, `fix/parser-crash`, `chore/update-deps`
+- **Commits**: cada tarea implementada genera un commit convencional independiente
+- **PR**: opcional, se puede crear al final del ciclo con `gh pr create`
+
 ## Flujo de Trabajo SDD
 
 ```

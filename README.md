@@ -110,6 +110,7 @@ changelog-generator/
 - **Commits**: conventional commits en inglés (`feat:`, `fix:`, `chore:`, etc.)
 - **Testing**: Vitest con TDD
 - **Persistencia**: Engram (predeterminado)
+- **Ramas**: cada cambio (`/sdd-new`) crea una rama `type/<name>` desde `main`; cada tarea → commit independiente
 
 ## Scripts disponibles
 
