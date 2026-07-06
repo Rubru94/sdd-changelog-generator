@@ -28,6 +28,7 @@ src/
 ├── parsers/
 │   └── commit.parser.ts        # Conventional commit regex parser
 ├── formatters/
+│   ├── date.formatter.ts      # Pure function: formatDate() for date display
 │   ├── markdown.formatter.ts   # Markdown output generator
 │   └── json.formatter.ts       # JSON output generator
 ├── types/
@@ -55,7 +56,7 @@ index.ts:
   - Call .parse()
 
 generate.ts:
-  - Define options (--from, --to, --output, --format, --group, --repo, --version, --all, --type)
+  - Define options (--from, --to, --output, --format, --group, --repo, --version, --all, --type, --date-format)
   - Instantiate ChangelogService
   - Call service.generate(options)
   - Write output to stdout or file
@@ -97,7 +98,7 @@ Pipeline:
 2. Parse each raw commit with `commitParser.parse(line)` → `Commit[]`
 3. Apply filters (type filter, exclude non-conventional unless --all)
 4. Group commits by type
-5. Sort commits by date descending (newest first, stable sort with `isFinite` NaN guard)
+5. Sort commits by date descending (newest first, `isFinite` NaN guard, hash secondary key)
 6. Call appropriate formatter (markdown or json)
 7. Return formatted string
 
@@ -170,13 +171,15 @@ Output: JSON with `{ version, date, sections: [{ type, heading, commits: Commit[
 type CommitType = 'feat' | 'fix' | 'chore' | 'refactor' | 'docs' | 'style' 
                 | 'test' | 'perf' | 'ci' | 'build' | 'revert';
 
+type DateFormatMode = 'date-only' | 'date-time' | 'iso';
+
 interface Commit {
   hash: string;
   type?: CommitType;
   scope?: string;
   description: string;
   body?: string;
-  date?: string;           // ISO 8601 committer date from %cI
+  date: string;           // ISO 8601 committer date from %cI (required, '' if unavailable)
   breaking: boolean;
   footers: Record<string, string>;
 }
@@ -195,6 +198,7 @@ interface ChangelogOptions {
   version?: string;     // Semver for header
   all?: boolean;        // Include non-conventional commits
   type?: CommitType[];  // Filter by types
+  dateFormat?: DateFormatMode;  // Date display format, default 'date-only'
 }
 ```
 
@@ -231,7 +235,7 @@ changelog.service.generate(options)
     │
     ├─► Group commits by type (if --group)
     │
-    ├─► Sort commits by date descending (newest first, `isFinite` NaN guard)
+    ├─► Sort commits by date descending (newest first, `isFinite` NaN guard, hash tiebreaker)
     │
     ├─► formatter.format(groupedCommits, options)
     │       │
@@ -278,6 +282,13 @@ No se usan excepciones personalizadas — se usa `console.error()` + `process.ex
 - **Context**: Los commits pueden agruparse por tipo en el service o en el formatter
 - **Decision**: El service agrupa (lógica de negocio). El formatter solo recibe datos ya agrupados y los pinta.
 - **Trade-off**: El service conoce tipos, el formatter no necesita saber de tipos de commit.
+
+### Decision 5: Pure function for date formatting
+- **Context**: El markdown formatter muestra fechas en 4 ubicaciones diferentes
+- **Option A**: Extraer `formatDate()` como función pura en `date.formatter.ts`
+- **Option B**: Mantener lógica inline con `slice()` en cada ubicación
+- **Decision**: **A** — función pura. Razón: evita duplicación, testeable aisladamente, fácil añadir nuevos modos.
+- **Trade-off**: Mínimo overhead de abstracción para máxima testabilidad.
 
 ## AI Model Assignments
 
