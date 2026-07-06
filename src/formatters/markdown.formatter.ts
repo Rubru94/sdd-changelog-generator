@@ -7,6 +7,7 @@ import {
   COMMIT_TYPE_HEADINGS,
   COMMIT_TYPE_ORDER,
 } from '../types/commit.types.js';
+import { formatDate } from './date.formatter.js';
 
 /**
  * Format grouped commits as Markdown changelog.
@@ -54,7 +55,11 @@ export function formatMarkdown(
 
     for (const commit of typeCommits) {
       const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      const formattedDate = formatDate(
+        commit.date,
+        options.dateFormat ?? 'date-only',
+      );
+      const date = formattedDate ? ` (${formattedDate})` : '';
       lines.push(`- ${scope}${commit.description}${date}`);
 
       if (commit.breaking) {
@@ -74,7 +79,11 @@ export function formatMarkdown(
 
     for (const commit of typeCommits) {
       const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      const formattedDate = formatDate(
+        commit.date,
+        options.dateFormat ?? 'date-only',
+      );
+      const date = formattedDate ? ` (${formattedDate})` : '';
       lines.push(`- ${scope}${commit.description}${date}`);
     }
   }
@@ -84,7 +93,11 @@ export function formatMarkdown(
     lines.push('');
     lines.push('### Changes');
     for (const commit of grouped._other) {
-      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      const formattedDate = formatDate(
+        commit.date,
+        options.dateFormat ?? 'date-only',
+      );
+      const date = formattedDate ? ` (${formattedDate})` : '';
       lines.push(`- ${commit.description}${date}`);
     }
   }
@@ -95,7 +108,11 @@ export function formatMarkdown(
     lines.push('### BREAKING CHANGES');
     for (const commit of breakingCommits) {
       const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      const date = commit.date ? ` (${commit.date.slice(0, 10)})` : '';
+      const formattedDate = formatDate(
+        commit.date,
+        options.dateFormat ?? 'date-only',
+      );
+      const date = formattedDate ? ` (${formattedDate})` : '';
       lines.push(`- ${scope}${commit.description}${date}`);
       if (commit.body) {
         const breakingBody = extractBreakingBody(commit.body);

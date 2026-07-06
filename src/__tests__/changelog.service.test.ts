@@ -9,7 +9,12 @@ import { getLog } from '../services/git.service.js';
 
 const DELIMITER = '|---end---|';
 
-function makeRaw(hash: string, subject: string, date: string, body = ''): string {
+function makeRaw(
+  hash: string,
+  subject: string,
+  date: string,
+  body = '',
+): string {
   return `${hash}${DELIMITER}${subject}${DELIMITER}${date}${DELIMITER}${body}${DELIMITER}`;
 }
 
@@ -21,7 +26,9 @@ describe('changelog.service', () => {
       makeRaw('c3', 'feat: newest commit', '2026-07-06T10:00:00Z'),
     ]);
 
-    const result = JSON.parse(generate({ format: 'json', group: true, all: true }));
+    const result = JSON.parse(
+      generate({ format: 'json', group: true, all: true }),
+    );
 
     expect(result.sections).toHaveLength(1);
     const commits = result.sections[0].commits;
@@ -31,6 +38,22 @@ describe('changelog.service', () => {
     expect(commits[2].hash).toBe('c1');
   });
 
+  it('sorts commits with same date by hash ascending', () => {
+    vi.mocked(getLog).mockReturnValue([
+      makeRaw('b-hash', 'feat: second commit', '2026-07-05T10:00:00Z'),
+      makeRaw('a-hash', 'feat: first commit', '2026-07-05T10:00:00Z'),
+    ]);
+
+    const result = JSON.parse(
+      generate({ format: 'json', group: true, all: true }),
+    );
+
+    const commits = result.sections[0].commits;
+    expect(commits).toHaveLength(2);
+    expect(commits[0].hash).toBe('a-hash');
+    expect(commits[1].hash).toBe('b-hash');
+  });
+
   it('sorts commits with missing date to end', () => {
     vi.mocked(getLog).mockReturnValue([
       makeRaw('c1', 'feat: with date', '2026-07-05T10:00:00Z'),
@@ -38,7 +61,9 @@ describe('changelog.service', () => {
       makeRaw('c3', 'feat: newer date', '2026-07-06T10:00:00Z'),
     ]);
 
-    const result = JSON.parse(generate({ format: 'json', group: true, all: true }));
+    const result = JSON.parse(
+      generate({ format: 'json', group: true, all: true }),
+    );
 
     const commits = result.sections[0].commits;
     expect(commits).toHaveLength(3);

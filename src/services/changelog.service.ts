@@ -39,11 +39,13 @@ export function generate(options: ChangelogOptions): string {
     );
   }
 
-  // Sort commits by date descending (newest first)
+  // Sort commits by date descending (newest first), then hash ascending as tiebreaker
   filteredCommits.sort((a, b) => {
     const timeA = a.date ? Date.parse(a.date) : 0;
     const timeB = b.date ? Date.parse(b.date) : 0;
-    return (isFinite(timeB) ? timeB : 0) - (isFinite(timeA) ? timeA : 0);
+    const diff = (isFinite(timeB) ? timeB : 0) - (isFinite(timeA) ? timeA : 0);
+    if (diff !== 0) return diff;
+    return a.hash.localeCompare(b.hash);
   });
 
   // Step 4: Format output

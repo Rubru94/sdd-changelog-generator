@@ -9,7 +9,7 @@ function makeCommit(overrides: Partial<Commit> = {}): Commit {
     scope: undefined,
     description: 'test commit',
     body: undefined,
-    date: undefined,
+    date: '',
     breaking: false,
     footers: {},
     ...overrides,
@@ -119,12 +119,37 @@ describe('markdown.formatter', () => {
     expect(result).not.toContain('()');
   });
 
-  it('skips date parentheses when date is undefined', () => {
+  it('skips date parentheses when date is empty string', () => {
     const commits: Commit[] = [
       makeCommit({ description: 'another no date commit' }),
     ];
     const result = formatMarkdown(commits, { format: 'markdown', group: true });
     expect(result).toContain('- another no date commit');
     expect(result).not.toContain('()');
+  });
+
+  it('shows date-time format when dateFormat is date-time', () => {
+    const commits: Commit[] = [
+      makeCommit({ date: '2026-07-03T14:30:00Z', description: 'dated commit' }),
+    ];
+    const result = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+      dateFormat: 'date-time',
+    });
+    expect(result).toContain('(2026-07-03 14:30)');
+  });
+
+  it('shows only date when dateFormat is date-only', () => {
+    const commits: Commit[] = [
+      makeCommit({ date: '2026-07-03T14:30:00Z', description: 'dated commit' }),
+    ];
+    const result = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+      dateFormat: 'date-only',
+    });
+    expect(result).toContain('(2026-07-03)');
+    expect(result).not.toContain('14:30');
   });
 });
