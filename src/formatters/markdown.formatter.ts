@@ -54,13 +54,7 @@ export function formatMarkdown(
     lines.push(`### ${heading}`);
 
     for (const commit of typeCommits) {
-      const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      const formattedDate = formatDate(
-        commit.date,
-        options.dateFormat ?? 'date-only',
-      );
-      const date = formattedDate ? ` (${formattedDate})` : '';
-      lines.push(`- ${scope}${commit.description}${date}`);
+      lines.push(formatCommitLine(commit, options, true));
 
       if (commit.breaking) {
         breakingCommits.push(commit);
@@ -78,13 +72,7 @@ export function formatMarkdown(
     lines.push(`### ${heading}`);
 
     for (const commit of typeCommits) {
-      const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      const formattedDate = formatDate(
-        commit.date,
-        options.dateFormat ?? 'date-only',
-      );
-      const date = formattedDate ? ` (${formattedDate})` : '';
-      lines.push(`- ${scope}${commit.description}${date}`);
+      lines.push(formatCommitLine(commit, options, true));
     }
   }
 
@@ -93,12 +81,7 @@ export function formatMarkdown(
     lines.push('');
     lines.push('### Changes');
     for (const commit of grouped._other) {
-      const formattedDate = formatDate(
-        commit.date,
-        options.dateFormat ?? 'date-only',
-      );
-      const date = formattedDate ? ` (${formattedDate})` : '';
-      lines.push(`- ${commit.description}${date}`);
+      lines.push(formatCommitLine(commit, options, false));
     }
   }
 
@@ -107,13 +90,7 @@ export function formatMarkdown(
     lines.push('');
     lines.push('### BREAKING CHANGES');
     for (const commit of breakingCommits) {
-      const scope = commit.scope ? `**${commit.scope}**: ` : '';
-      const formattedDate = formatDate(
-        commit.date,
-        options.dateFormat ?? 'date-only',
-      );
-      const date = formattedDate ? ` (${formattedDate})` : '';
-      lines.push(`- ${scope}${commit.description}${date}`);
+      lines.push(formatCommitLine(commit, options, true));
       if (commit.body) {
         const breakingBody = extractBreakingBody(commit.body);
         if (breakingBody) {
@@ -142,6 +119,23 @@ function groupByType(commits: Commit[]): GroupedCommits {
   }
 
   return grouped;
+}
+
+function formatCommitLine(
+  commit: Commit,
+  options: ChangelogOptions,
+  showScope?: boolean,
+): string {
+  const scope = showScope && commit.scope ? `**${commit.scope}**: ` : '';
+  const shortHash = commit.hash
+    ? ` (\`${commit.hash.slice(0, 7)}\`)`
+    : '';
+  const formattedDate = formatDate(
+    commit.date,
+    options.dateFormat ?? 'date-only',
+  );
+  const date = formattedDate ? ` (${formattedDate})` : '';
+  return `- ${scope}${commit.description}${shortHash}${date}`;
 }
 
 function extractBreakingBody(body: string): string {
