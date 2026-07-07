@@ -152,4 +152,108 @@ describe('markdown.formatter', () => {
     expect(result).toContain('(2026-07-03)');
     expect(result).not.toContain('14:30');
   });
+
+  // === Hash display tests (SC-01 to SC-06) ===
+
+  it('SC-01: shows short hash in backticks for grouped commits', () => {
+    const commits: Commit[] = [
+      makeCommit({ hash: 'abc1234def5678', description: 'feature with hash' }),
+    ];
+    const result = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+    });
+    expect(result).toContain('`abc1234`');
+  });
+
+  it('SC-02: shows hash before date in parentheses', () => {
+    const commits: Commit[] = [
+      makeCommit({
+        hash: 'abc1234def5678',
+        date: '2026-07-03T12:00:00Z',
+        description: 'dated hash commit',
+      }),
+    ];
+    const result = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+    });
+    expect(result).toContain('(`abc1234`) (2026-07-03)');
+  });
+
+  it('SC-03: empty hash produces no backtick artifact', () => {
+    const commits: Commit[] = [
+      makeCommit({ hash: '', description: 'no hash commit' }),
+    ];
+    const result = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+    });
+    expect(result).toContain('- no hash commit');
+    expect(result).not.toMatch(/\(``\)/);
+  });
+
+  it('SC-04: hash shows in all sections (grouped, ungrouped, breaking)', () => {
+    const commits: Commit[] = [
+      makeCommit({
+        type: 'feat',
+        hash: 'aaaaaa1aaaa',
+        description: 'feature one',
+      }),
+      makeCommit({
+        type: 'fix',
+        hash: 'bbbbbb2bbbb',
+        description: 'fix one',
+        breaking: true,
+      }),
+    ];
+    const groupedResult = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+    });
+    const ungroupedResult = formatMarkdown(commits, {
+      format: 'markdown',
+      group: false,
+    });
+
+    expect(groupedResult).toContain('`aaaaaa1`');
+    expect(groupedResult).toContain('`bbbbbb2`');
+    expect(ungroupedResult).toContain('`aaaaaa1`');
+    expect(ungroupedResult).toContain('`bbbbbb2`');
+    expect(groupedResult).toContain('### BREAKING CHANGES');
+    expect(groupedResult).toContain('`bbbbbb2`');
+  });
+
+  it('SC-05: displays only first 7 characters of hash', () => {
+    const commits: Commit[] = [
+      makeCommit({
+        hash: 'abc1234def5678',
+        description: 'truncated hash',
+      }),
+    ];
+    const result = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+    });
+    expect(result).toContain('`abc1234`');
+    expect(result).not.toContain('`abc1234def5678`');
+  });
+
+  it('SC-06: shows hash with scope and date', () => {
+    const commits: Commit[] = [
+      makeCommit({
+        hash: 'abc1234def5678',
+        scope: 'auth',
+        date: '2026-07-03T12:00:00Z',
+        description: 'add login',
+      }),
+    ];
+    const result = formatMarkdown(commits, {
+      format: 'markdown',
+      group: true,
+    });
+    expect(result).toContain(
+      '**auth**: add login (`abc1234`) (2026-07-03)',
+    );
+  });
 });
