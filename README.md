@@ -116,6 +116,7 @@ changelog-generator/
 
 ```bash
 npm run dev          # Desarrollo con hot-reload (tsx watch)
+npm run dev:time     # Ejecuta con --date-format date-time y los últimos 10 commits
 npm run build        # Compilar TypeScript → dist/
 npm run start        # Ejecutar versión compilada (node dist/index.js)
 npm run test         # Ejecutar tests (Vitest)
@@ -123,6 +124,76 @@ npm run test:watch   # Tests en modo watch
 npm run lint         # ESLint
 npm run typecheck    # tsc --noEmit
 npm run package      # Compilar + generar binarios standalone → pkg/
+npm run version:minor  # Bump de versión minor (ej: 0.1.0 → 0.2.0)
+npm run version:patch  # Bump de versión patch (ej: 0.1.0 → 0.1.1)
+```
+
+## Ejemplos de uso
+
+El CLI acepta múltiples opciones para filtrar la generación del changelog:
+
+### Filtrar por rango de referencias (tags, commits, HEAD~N)
+
+```bash
+# Entre dos tags (versiones)
+npx tsx src/index.ts --from v1.0.0 --to v2.0.0
+
+# Últimos N commits desde HEAD
+npx tsx src/index.ts --from HEAD~10 --to HEAD
+
+# Entre dos commits específicos
+npx tsx src/index.ts --from abc123def --to 456ghi789
+```
+
+### Filtrar por tipo de commit
+
+```bash
+# Solo features y bugfixes
+npx tsx src/index.ts --from HEAD~20 --type feat,fix
+
+# Solo cambios de tipo chore
+npx tsx src/index.ts --from HEAD~10 --type chore
+```
+
+### Combinar filtros
+
+```bash
+# Rango + tipo + formato + agrupado
+npx tsx src/index.ts --from v1.0.0 --to v2.0.0 --type feat,fix,refactor --group
+
+# Con salida a archivo
+npx tsx src/index.ts --from HEAD~10 --output CHANGELOG.md
+
+# Formato JSON
+npx tsx src/index.ts --from HEAD~15 --format json
+```
+
+### Formato de fechas
+
+```bash
+# Fecha con hora
+npx tsx src/index.ts --from HEAD~10 --date-format date-time
+
+# Formato ISO
+npx tsx src/index.ts --from HEAD~10 --date-format iso
+```
+
+### Incluir commits no convencionales
+
+```bash
+npx tsx src/index.ts --from HEAD~10 --all
+```
+
+### Sin agrupar por tipo
+
+```bash
+npx tsx src/index.ts --from HEAD~10 --no-group
+```
+
+### Versión personalizada en el header
+
+```bash
+npx tsx src/index.ts --from HEAD~10 --ver 2.0.0
 ```
 
 ## Binarios portables
